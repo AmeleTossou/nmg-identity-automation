@@ -1,14 +1,20 @@
 ﻿<#
 .SYNOPSIS
-    Documents and disables a single Active Directory account.
+    Performs a complete offboarding of a single Active
+    Directory account, per SOP-IAM-001.
 
 .DESCRIPTION
-    This script performs Steps 1 and 2 and 4 of SOP-IAM-001. Captures the account and its group
-    memberships to timestamped CSV files, then disables the account and
-    stamps it with the authorising ticket number.
+    All five steps: documents the account and its group
+    memberships to timestamped CSV files, verifies that
+    record on disk, disables the account, stamps it with the
+    authorising ticket, randomises the password, removes all
+    group memberships, and moves it to the Disabled Users OU.
 
-    Refuses to act on an account that does not exist, is already
-    disabled, or appears to be a service account.
+    Refuses to act if the account does not exist, is already
+    disabled, appears to be a service account, the ticket is
+    malformed, the export cannot be verified, or the
+    destination OU is missing.
+
 
 .PARAMETER Username
     The SamAccountName of the account to offboard. Mandatory.
@@ -20,7 +26,7 @@
     .\Disable-NMGUser.ps1 -Username "hgrady" -Ticket "NMG-0211" -WhatIf
     Runs every check and reports what it would do, changing nothing.
 
-.NOTES
+.NOTES bb 
     Author  : Amele Tossou
     Created : 9/7/2026
     Implements steps 1, 2 and 4 of SOP-IAM-001.
@@ -206,16 +212,56 @@ if ($PSCmdlet.ShouldProcess($Username, "Remove $($written.Count) memberships")) 
 
 }
 
+#--- EDIT 1: CHECK THE DESTINATION --------------------------
+# Goes AFTER the group removal block, BEFORE the move.
+#
+# A missing OU fails at the very end of an otherwise perfect
+# run, leaving the account everywhere except where it belongs.
 
+if (-not (Get-ADOrganizationalUnit -Filter "Name -eq 'Disabled Users'" `
+          -ErrorAction SilentlyContinue)) {
+
+    Write-Host "  STOP: Disabled Users OU not found." -ForegroundColor Red
+    Write-Host "        Steps 1 to 4 are done. Move by hand." -ForegroundColor Gray
+    try { Stop-Transcript | Out-Null } catch { }
+    return
+}
+
+#--- EDIT 2: BUILD THE TARGET PATH --------------------------
+# Get-ADDomain hands you the root at runtime, so the path is
+# never hardcoded and the script works in any domain.
+
+$root   = (Get-ADDomain).DistinguishedName
+$target = "OU=Disabled Users,$root"
+
+# Look up where the account is RIGHT NOW. Not earlier.
+$dn = (Get-ADUser -Identity $Username).DistinguishedName
+
+
+#--- EDIT 3: THE MOVE ---------------------------------------
+# Inside its own ShouldProcess block. A move is reversible,
+# but reversible is not the same as harmless, and anything
+# that changes a live system gets declared.
+
+if ($PSCmdlet.ShouldProcess($Username, "Move to Disabled Users")) {
+
+    Move-ADObject -Identity $dn -TargetPath $target
+
+    Write-Host "  Moved to quarantine." -ForegroundColor Green
+}
 
 #--- SUMMARY ------------------------------------------------
+
+$final = Get-ADUser -Identity $Username -Properties MemberOf
 
 Write-Host ""
 Write-Host "  Account  : $($user.Name) ($Username)"
 Write-Host "  Ticket   : $Ticket"
+Write-Host "  Enabled  : $($final.Enabled)"
+Write-Host "  Groups   : $($final.MemberOf.Count)"
+Write-Host "  Location : $($final.DistinguishedName)"
 Write-Host "  Evidence : $ReportPath"
-Write-Host "  Log      : $LogPath"
 Write-Host ""
 
-try { Stop-Transcript | Out-Null } catch { }
 
+try { Stop-Transcript | Out-Null } catch { }
