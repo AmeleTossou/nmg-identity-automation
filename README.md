@@ -1,14 +1,13 @@
-# nmg-identity-automation
-Identity lifecycle automation with Powershell built during the TotalThreat 30-Day Challenge
 # NMG Identity Automation with Powershell
 
 PowerShell tooling for identity lifecycle management, built for
 Northstar Medical Group.
 
 ## The Problem
+
 The Process to identify former emplyee account depended only on one employee manually emailing IT whenever someone quit.After she retired, notifications stopped for 102 days.
 
-After amanuel review, 23 old acount taking 11 hours over 4 days was found.However, it could not identify unreported deprtures, contractor accounts, or service accounts. 
+After a manual review, 23 old account taking 11 hours over 4 days was found. However, it could not identify unreported departures, contractor accounts, or service accounts. 
 
 ## The Approach
 
@@ -16,6 +15,19 @@ Rather than comparing directory records against payroll records, these
 tools created in the project query the domain controller directly for the last authentication
 date of every account. That value does not depend on paperwork being
 filed correctly or names matching between systems
+
+## Before you start
+
+- Windows Server with the ActiveDirectory PowerShell module
+
+      Import-Module ActiveDirectory
+
+- Rights to modify user objects in the domain
+- An authorising ticket number, in the form NMG-0000
+- A Disabled Users OU at the root of the domain
+- A writable reports folder. Create it if it does not exist:
+
+      New-Item -Path "C:\Reports\Offboarding" -ItemType Directory -Force
 
 ## Tools
 
