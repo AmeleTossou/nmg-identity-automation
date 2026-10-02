@@ -97,8 +97,6 @@ any change at all, and tells you why.
 | export file is empty | The record could not be written | Check the reports folder exists and is writable |
 | Disabled Users OU not found | The destination is missing | Steps 1 to 4 completed. Move the account by hand |
 
-
-
 ## What an offboarding leaves behind
 
 - Two timestamped CSV files per account in `Evidence/`. One
@@ -120,6 +118,7 @@ history of a removed memberships.
 - Handles one account per run. Bulk processing is not built yet.
 - The service account check matches on a name prefix and a
   department. An unusually named service account could get past it.
+  
   
 ## Repository Structure
 
