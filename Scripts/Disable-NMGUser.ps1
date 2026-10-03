@@ -30,8 +30,6 @@
     Created : 9/7/2026
     Implements steps 1, 2 and 4 of SOP-IAM-001.
 #>
-
-[CmdletBinding(SupportsShouldProcess)]
 param(
     [Parameter(Mandatory)]
     [string]$Username,
@@ -208,7 +206,6 @@ if ($PSCmdlet.ShouldProcess($Username, "Remove $($written.Count) memberships")) 
         $failed | ForEach-Object { Write-Host "    $_" -ForegroundColor Red }
     }
 
-
 }
 
 #--- EDIT 1: CHECK THE DESTINATION --------------------------
@@ -236,7 +233,6 @@ $target = "OU=Disabled Users,$root"
 # Look up where the account is RIGHT NOW. Not earlier.
 $dn = (Get-ADUser -Identity $Username).DistinguishedName
 
-
 #--- EDIT 3: THE MOVE ---------------------------------------
 # Inside its own ShouldProcess block. A move is reversible,
 # but reversible is not the same as harmless, and anything
@@ -261,6 +257,5 @@ Write-Host "  Groups   : $($final.MemberOf.Count)"
 Write-Host "  Location : $($final.DistinguishedName)"
 Write-Host "  Evidence : $ReportPath"
 Write-Host ""
-
 
 try { Stop-Transcript | Out-Null } catch { }
