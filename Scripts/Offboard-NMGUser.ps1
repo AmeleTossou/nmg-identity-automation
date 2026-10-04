@@ -4,16 +4,16 @@
     Directory account, per SOP-IAM-001.
 
 .DESCRIPTION
-    All five steps: documents the account and its group
-    memberships to timestamped CSV files, verifies that
-    record on disk, disables the account, stamps it with the
-    authorising ticket, randomises the password, removes all
-    group memberships, and moves it to the Disabled Users OU.
+    Runs all five steps. Documents the account and its group
+    memberships, verifies that record on disk, disables the
+    account, stamps the authorising ticket, randomises the
+    password, removes all group memberships, and moves the
+    account to the Disabled Users OU.
 
-    Refuses to act if the account does not exist, is already
-    disabled, appears to be a service account, the ticket is
-    malformed, the export cannot be verified, or the
-    destination OU is missing.
+.EXAMPLE
+    .\Offboard-NMGUser.ps1 -Username "jdoe" -Ticket "NMG-0214" -WhatIf
+    Runs every check and reports what it would do, changing
+    nothing. Do this first, every time.
 
 .PARAMETER Username
     The SamAccountName of the account to offboard. Mandatory.
@@ -32,7 +32,6 @@
 #>
 
 [CmdletBinding(SupportsShouldProcess)]
-
 param(
     [Parameter(Mandatory)]
     [string]$Username,

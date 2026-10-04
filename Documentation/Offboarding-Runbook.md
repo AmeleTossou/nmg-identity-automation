@@ -53,77 +53,71 @@ until Counsel releases it in writing.
 
 Disabled accounts are evidence. You disable a leaver.
 You do not delete them.
-
 ## Tooling
 
-Steps 1, 2 and 4 of this procedure are implemented in
-`Scripts/Disable-NMGUser.ps1`.
+All five steps of this procedure are implemented in
+`Scripts/Offboard-NMGUser.ps1`.
 
-    .\Disable-NMGUser.ps1 -Username "rpace" -Ticket "NMG-0212"
+    .\Scripts\Offboard-NMGUser.ps1 -Username "jdoe" -Ticket "NMG-0214"
 
 Both parameters are mandatory. The script will not run without
 an authorising ticket number.
 
-### What the tool refuses to do
-
-The script stops, without making any change, if:
-
-- The named account does not exist.
-- The account is already disabled.
-- The account appears to be a service account.
-- The ticket number is not in the form NMG-0000.
-- The group membership export did not write a file.
-- The export file exists but contains no rows.
+Operating instructions, including every refusal the script can
+produce and what to do about each one, are in the repository
+README rather than here. This document describes what should
+happen. The README describes how to make it happen.
 
 ### Why step 4 has a gate in front of it
 
 Removing group memberships is the only step in this procedure
-that cannot be reversed. Active Directory keeps no history of a
-removed membership, so the CSV written moments earlier is the
-only record that will ever exist of what the account could reach.
+that cannot be reversed. The CSV written moments earlier is the
+only record that will ever exist of what the account could
+reach, so the script reads that file back from disk and counts
+the rows before the removal is reachable.
 
-The script therefore reads that file back from disk and counts
-the rows before the removal is reachable. Checking the query
-result instead would confirm only that the query ran, not that
-the record survived to disk.
+### Why step 5 goes last
 
-If the record cannot be verified, the script stops and the
-account is left untouched.
+Moving an object changes its distinguished name. Every earlier
+step refers to the account at its original location, so a move
+performed first would cause the remaining steps to fail against
+a path that no longer exists.
 
-### Partial failure
+## Reporting
 
-If an individual membership cannot be removed, the script
-records it, continues with the rest, and reports removed and
-failed counts separately. An account left partially stripped is
-reported as such rather than passing silently.
+`Scripts/Get-NMGOffboardingStatus.ps1` reports how many accounts
+have been offboarded, how many are offboarded but not yet moved,
+and how many remain. It takes no parameters and makes no changes
+of any kind. It is safe for anybody to run at any time.
 
-### Checking before acting
+## Known exceptions
 
-The script supports `-WhatIf`. Both the disable and the group
-removal are declared, so both are skipped on a dry run.
+Two accounts, hgrady and rpace, were offboarded before step 5
+was implemented and were moved into the Disabled Users OU
+manually afterwards. Their evidence files and logs therefore do
+not record the move.
 
-Run it with `-WhatIf` first, and verify the result rather than
-trusting the output. Every time.
+## History
 
-Steps 3 and 5 are still performed by hand.
+This procedure was tooled between Day 7 and Day 10. Earlier
+commits refer to the script as Disable-NMGUser.ps1, which was
+accurate when it performed two steps. It was renamed once it
+performed all five.
 
-### Checking before acting
 
-The script supports `-WhatIf`. Running it with that switch
-performs every check and reports what it would do, without
-changing anything.
+## Reporting
 
-Run it with `-WhatIf` first. Every time.
+`Scripts/Get-NMGOffboardingStatus.ps1` reports how many accounts
+have been offboarded, how many are offboarded but not yet moved,
+and how many remain. It takes no parameters and makes no changes
+of any kind. It is safe for anybody to run at any time.
 
-### What it leaves behind
+## Known exceptions
 
-- Two timestamped CSV files in `Evidence/`, capturing the
-  account and its group memberships before the change.
-- A transcript in `Logs/`, recording which account was
-  actioned, under which ticket, by whom, and at what time.
-
-Steps 3 to 5 are still performed by hand. They will be added
-to this script over the remainder of the week.
+Two accounts, hgrady and rpace, were offboarded before step 5
+was implemented and were moved into the Disabled Users OU
+manually afterwards. Their evidence files and logs therefore do
+not record the move.
 
 
 ---
