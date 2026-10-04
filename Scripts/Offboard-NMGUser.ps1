@@ -15,7 +15,6 @@
     malformed, the export cannot be verified, or the
     destination OU is missing.
 
-
 .PARAMETER Username
     The SamAccountName of the account to offboard. Mandatory.
 
@@ -33,6 +32,7 @@
 #>
 
 [CmdletBinding(SupportsShouldProcess)]
+
 param(
     [Parameter(Mandatory)]
     [string]$Username,
