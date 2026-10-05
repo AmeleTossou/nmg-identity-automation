@@ -119,7 +119,6 @@ was implemented and were moved into the Disabled Users OU
 manually afterwards. Their evidence files and logs therefore do
 not record the move.
 
-
 ---
 
 Built during the TotalThreat 30-Day Challenge in a simulated
