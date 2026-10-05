@@ -10,11 +10,14 @@
     password, removes all group memberships, and moves the
     account to the Disabled Users OU.
 
+<<<<<<< HEAD:Scripts/Offboard-NMGUser.ps1
 .EXAMPLE
     .\Offboard-NMGUser.ps1 -Username "jdoe" -Ticket "NMG-0214" -WhatIf
     Runs every check and reports what it would do, changing
     nothing. Do this first, every time.
 
+=======
+>>>>>>> b6e31a20a15f7e6184f5794f2dd21966edbbd76b:Scripts/Disable-NMGUser.ps1
 .PARAMETER Username
     The SamAccountName of the account to offboard. Mandatory.
 
@@ -32,6 +35,7 @@
 #>
 
 [CmdletBinding(SupportsShouldProcess)]
+
 param(
     [Parameter(Mandatory)]
     [string]$Username,
@@ -208,7 +212,6 @@ if ($PSCmdlet.ShouldProcess($Username, "Remove $($written.Count) memberships")) 
         $failed | ForEach-Object { Write-Host "    $_" -ForegroundColor Red }
     }
 
-
 }
 
 #--- EDIT 1: CHECK THE DESTINATION --------------------------
@@ -236,7 +239,6 @@ $target = "OU=Disabled Users,$root"
 # Look up where the account is RIGHT NOW. Not earlier.
 $dn = (Get-ADUser -Identity $Username).DistinguishedName
 
-
 #--- EDIT 3: THE MOVE ---------------------------------------
 # Inside its own ShouldProcess block. A move is reversible,
 # but reversible is not the same as harmless, and anything
@@ -261,6 +263,5 @@ Write-Host "  Groups   : $($final.MemberOf.Count)"
 Write-Host "  Location : $($final.DistinguishedName)"
 Write-Host "  Evidence : $ReportPath"
 Write-Host ""
-
 
 try { Stop-Transcript | Out-Null } catch { }
