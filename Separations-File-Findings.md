@@ -1,7 +1,7 @@
 # Findings: NMG_Separations_Q2Q3.csv
 
 **Received:** 11 August 2026, from S. Torres, HR
-**Reviewed by:** [your name]
+**Reviewed by:** Amele Tossou
 **Rows:** 40
 **Accounts actioned:** 0
 

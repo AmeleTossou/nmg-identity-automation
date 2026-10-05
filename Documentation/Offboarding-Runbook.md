@@ -119,6 +119,7 @@ was implemented and were moved into the Disabled Users OU
 manually afterwards. Their evidence files and logs therefore do
 not record the move.
 
+
 ## Bulk requests
 
 This procedure describes offboarding a single account against a
@@ -157,7 +158,6 @@ straight into action is not validation, it is a delay.
 
 No tooling currently exists to perform this validation. It is
 performed manually. Automating it is the next piece of work.
-
 
 ---
 
