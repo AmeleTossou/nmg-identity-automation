@@ -3,6 +3,8 @@
 PowerShell tooling for identity lifecycle management, built for
 Northstar Medical Group.
 
+**Walkthrough video (6 min):** https://www.loom.com/share/e43e64617d6e4068a6b58deb514a6861
+
 ## The Problem
 
 The Process to identify former emplyee account depended only on one employee manually emailing IT whenever someone quit.After she retired, notifications stopped for 102 days.
