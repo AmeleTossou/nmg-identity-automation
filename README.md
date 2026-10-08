@@ -31,11 +31,6 @@ filed correctly or names matching between systems
 
 ## Tools
 
-| Script | Purpose |
-|---|---|
-| [`Invoke-BulkValidation.ps1`](Tools/Invoke-BulkValidation.ps1) | Validates the approved list before a bulk run |
-| [`Invoke-BulkOffboarding.ps1`](Tools/Invoke-BulkOffboarding.ps1) | Runs bulk offboarding from the approved list |
-
 ### Find-StaleAccounts.ps1
 
 Identifies enabled accounts that have not authenticated within a given
