@@ -1,9 +1,9 @@
+**Walkthrough video (6 min):** https://www.loom.com/share/e43e64617d6e4068a6b58deb514a6861
+
 # NMG Identity Automation with Powershell
 
 PowerShell tooling for identity lifecycle management, built for
 Northstar Medical Group.
-
-**Walkthrough video (6 min):** https://www.loom.com/share/e43e64617d6e4068a6b58deb514a6861
 
 ## The Problem
 
